@@ -12,6 +12,8 @@
 
 .env
 .env.local
+.claude
+.claude/*
 
 # testing
 /coverage
