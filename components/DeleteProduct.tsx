@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 
-export default function DeleteProduct({ productId, onDone }: any) {
+export default function DeleteProduct({ productId, onDone , role }: any) {
   const remove = async () => {
     const confirmDelete = confirm("Delete this product?");
     if (!confirmDelete) return;
@@ -24,7 +24,7 @@ export default function DeleteProduct({ productId, onDone }: any) {
   };
 
   return (
-    <Button size="sm" variant="destructive" onClick={remove} className="cursor-pointer">
+    <Button size="sm" variant="destructive" onClick={remove} className="cursor-pointer" disabled={role==="supplier" || role==="user"}>
       Delete
     </Button>
   );

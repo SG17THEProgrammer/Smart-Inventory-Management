@@ -16,8 +16,25 @@ export async function POST(req: Request) {
   return NextResponse.json(product);
 }
 
-export async function GET() {
+export async function GET(req: Request) {
   await connectDB();
-  const products = await Product.find();
-  return NextResponse.json(products);
+
+  const { searchParams } = new URL(req.url);
+
+  const page = Number(searchParams.get("page")) || 1;
+  const limit = Number(searchParams.get("limit")) || Number(searchParams.get("total")) ;
+
+  const skip = (page - 1) * limit;
+
+  const [products, total] = await Promise.all([
+    Product.find().skip(skip).limit(limit).sort({ createdAt: -1 }),
+    Product.countDocuments(),
+  ]);
+
+  return NextResponse.json({
+    products,
+    total,
+    page,
+    totalPages: Math.ceil(total / limit),
+  });
 }

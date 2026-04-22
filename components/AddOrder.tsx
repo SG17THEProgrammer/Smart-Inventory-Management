@@ -3,8 +3,10 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-
+import { useSession } from "next-auth/react";
 export default function AddOrder({ productId, onDone }: any) {
+    const { data: session } = useSession();
+    const role = (session?.user as any)?.role;
     const [loading, setLoading] = useState(false);
     const [qty, setQty] = useState(1);
 
@@ -59,21 +61,21 @@ export default function AddOrder({ productId, onDone }: any) {
             />
 
             <div className="flex gap-2">
-                <Button
+                {role==="supplier" ? "":<Button
                     onClick={() => createOrder("sale")}
                     disabled={loading}
-                    className="bg-red-500 cursor-pointer"
+                    className="bg-red-500 cursor-pointer hover:bg-red-600"
                 >
                     {loading ? "Processing..." : "Order this product"}
-                </Button>
+                </Button>}
 
-                <Button
+               {role==="supplier"? <Button
                     onClick={() => createOrder("purchase")}
                     disabled={loading}
                     className="bg-green-500 cursor-pointer"
                 >
                     {loading ? "Processing..." : "Add items in the stock"}
-                </Button>
+                </Button>:""}
             </div>
         </div>
     );

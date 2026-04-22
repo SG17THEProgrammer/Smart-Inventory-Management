@@ -7,6 +7,7 @@ import AddOrder from "./AddOrder";
 import { toast } from "sonner";
 import AIParser from "./AIParser";
 import OrderList from "./OrderList";
+import AnalyticsCharts from "./AnalyticsCharts";
 
 export default function InsightsPanel({ product, refreshProducts }: any) {
     const [data, setData] = useState<any>(null);
@@ -28,19 +29,20 @@ export default function InsightsPanel({ product, refreshProducts }: any) {
     };
 
     useEffect(() => {
+        // loadAnalytics();
         loadInsights();
     }, [product]);
 
     const isOutOfStock = data?.product?.stock <= 0;
 
     if (loading) {
-        return <p className="animate-pulse text-center">Loading insights...</p>;
+        return <p className="animate-pulse text-center mt-4">Loading insights...</p>;
     }
 
 
 
     return (
-        <div className="space-y-4">
+        <div className="space-y-4 px-4 py-3 self-start border-l-2 border-b-2 border-gray-300">
 
             {/* Product Overview */}
             <Card className="p-4">
@@ -103,18 +105,20 @@ export default function InsightsPanel({ product, refreshProducts }: any) {
             </Card>
 
             {/* Actions */}
-            <Card className="p-4">
+            {/* <Card className="p-4">
                 <h3 className="font-semibold mb-2">Actions</h3>
 
                 <AddOrder productId={product._id} onDone={() => {
                     loadInsights();
                     refreshProducts();
                 }} />
-            </Card>
+            </Card> */}
 
-            <Card className="p-4">
-                <OrderList />
-            </Card>
+            
+
+      
+
+
         </div>
     );
 }

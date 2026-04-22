@@ -6,9 +6,12 @@ import { Button } from "@/components/ui/button"
 import { motion } from "framer-motion"
 import Image from "next/image"
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel"
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useSession } from "next-auth/react"
 import { signOut } from "next-auth/react";
+import Navbar from "@/components/Navbar"
+import { SpinnerCustom } from "@/components/Spinner"
+import { toast } from "sonner"
 
 export default function Page() {
 
@@ -18,59 +21,57 @@ export default function Page() {
   const titles = ["AI PROCESSING", "INVENTORY DATA", "DEMAND PREDICTION"]
   const [index, setIndex] = useState(0)
 
-  // AUTO SCROLL
   useEffect(() => {
-    if (!api) return
+  if (!api) return;
 
-    const interval = setInterval(() => {
-      api.scrollNext()
-    }, 3000) // change slide every 3 sec
+  const onSelect = () => {
+    setIndex(api.selectedScrollSnap());
+  };
 
-    return () => clearInterval(interval)
-  }, [api])
+  api.on("select", onSelect);
+  return () => api.off("select", onSelect);
+}, [api]);
 
-  // track index for text sync
-  useEffect(() => {
-    if (!api) return
+const intervalRef = useRef(null as any);
 
-    api.on("select", () => {
-      setIndex(api.selectedScrollSnap())
-    })
-  }, [api])
+useEffect(() => {
+  if (!api || intervalRef.current) return;
+
+  intervalRef.current = setInterval(() => {
+    api.scrollNext();
+  }, 4000);
+
+  return () => {
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+  };
+}, [api]);
+
+
 
   const handleLogout =async () => {
+    toast.success("Logged out successfully");
     await signOut({ callbackUrl: "/login" });
   }
 
+  if(status === "loading") {
+    return <SpinnerCustom />
+  }
+
+
+  // console.log(session);
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-700 via-purple-700 to-pink-600 text-white overflow-hidden">
 
       {/* Navbar */}
-      <nav className="flex justify-between items-center px-8 py-6">
-        <h1 className="text-xl font-bold tracking-wide">SmartAI</h1>
-
-        <div className="flex gap-4 items-center">
-          <Link href="/dashboard" className={pathname === "/dashboard" ? "underline" : ""}>
-            Dashboard
-          </Link>
-          {status === "unauthenticated" && <>
-            <Link href="/login">
-              <Button variant="secondary" className="cursor-pointer">Login</Button>
-            </Link>
-
-            <Link href="/register">
-              <Button className="bg-white text-black hover:bg-gray-200 cursor-pointer">
-                Register
-              </Button>
-            </Link></>}
-
-          {status === "authenticated" && (
-            <Button variant="destructive" className="cursor-pointer" onClick={handleLogout}>
-              Logout
-            </Button>
-          )}
-        </div>
-      </nav>
+      <Navbar
+      pathname={pathname}
+      // status={status}
+      // session={session}
+      handleLogout={handleLogout}
+      />
 
       {/* Hero Section */}
       <div className="flex flex-col items-center justify-center text-center px-6 mt-10">
@@ -104,6 +105,7 @@ export default function Page() {
 
           {/* CAROUSEL */}
           <Carousel
+          // api={api}
             setApi={setApi}
             opts={{
               loop: true,   // 🔥 THIS FIXES YOUR ISSUE
@@ -202,7 +204,7 @@ export default function Page() {
           Join small businesses already optimizing their inventory with AI.
         </p>
 
-        <div className="mt-6 flex justify-center gap-4">
+        {status === "authenticated" ? ""  :<><div className="mt-6 flex justify-center gap-4">
           <Link href="/register">
             <Button className="bg-white text-black cursor-pointer hover:bg-gray-400 hover:text-white">Get Started</Button>
           </Link>
@@ -210,7 +212,7 @@ export default function Page() {
           <Link href="/login">
             <Button variant="secondary" className="cursor-pointer">Login</Button>
           </Link>
-        </div>
+        </div></>}
       </div>
 
     </div>

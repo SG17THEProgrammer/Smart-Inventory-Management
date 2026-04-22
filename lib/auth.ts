@@ -24,18 +24,14 @@ export const authOptions: NextAuthOptions = {
           email: credentials.email,
         });
 
-        if (!user) {
-          throw new Error("User not found");
-        }
+        if (!user) throw new Error("User not found");
 
         const isValid = await bcrypt.compare(
           credentials.password,
           user.password
         );
 
-        if (!isValid) {
-          throw new Error("Invalid password");
-        }
+        if (!isValid) throw new Error("Invalid password");
 
         return {
           id: user._id.toString(),
@@ -49,38 +45,33 @@ export const authOptions: NextAuthOptions = {
 
   session: {
     strategy: "jwt",
-    maxAge: 60 * 60 * 24, // 1 day (in seconds)
+    maxAge: 60 * 60 * 24,
+  },
+
+  jwt: {
+    maxAge: 60 * 60 * 24,
   },
 
   pages: {
     signIn: "/login",
   },
 
-  jwt: {
-  maxAge: 60 * 60 * 24, // 1 day
-},
-
   callbacks: {
     async jwt({ token, user }) {
-      // Runs on login
       if (user) {
         token.id = (user as any).id;
         token.role = (user as any).role;
         token.name = (user as any).name;
-        token.exp = Math.floor(Date.now() / 1000) + 60 * 60 * 24;
       }
-
       return token;
     },
 
     async session({ session, token }) {
-      // Makes data available in frontend
       if (session.user) {
         (session.user as any).id = token.id;
         (session.user as any).role = token.role;
-        session.user.name = token.name;
+        session.user.name = token.name as string;
       }
-
       return session;
     },
   },

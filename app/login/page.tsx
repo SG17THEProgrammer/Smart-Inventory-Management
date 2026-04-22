@@ -8,6 +8,7 @@ import { useEffect, useRef, useState } from "react";
 import { loginSchema } from "@/validators/auth";
 import { useRouter } from "next/navigation"; 
 import { toast } from "sonner";
+import { SpinnerCustom } from "@/components/Spinner";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -26,11 +27,11 @@ useEffect(() => {
     toast.success("You're already logged in");
     router.replace("/");
   }
-}, [status, router]);
+}, [status]);
 
-// if (status === "loading") {
-//   return <h1>Loading......</h1>;
-// }
+if (status === "loading") {
+  return <SpinnerCustom/>
+}
 
 
   const handleLogin = async () => {
@@ -50,11 +51,12 @@ useEffect(() => {
       const res = await signIn("credentials", {
         email,
         password,
-        // callbackUrl: "/dashboard",
-        // redirect: true,
+        callbackUrl: "/",
+        redirect: true,
       });
 
-      console.log(res);
+      // console.log(res);
+      toast.success("Login successful");
 
     } catch (err) {
       console.error("Login error:", err);

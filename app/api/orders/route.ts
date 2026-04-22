@@ -5,10 +5,21 @@ import Notification from "@/models/Notification";
 import { NextResponse } from "next/server";
 import Insight from "@/models/Insight";
 import { orderSchema } from "@/validators/order";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/lib/auth";
 
 export async function POST(req: Request) {
     try {
         await connectDB();
+
+        const session = await getServerSession(authOptions);
+
+        if (!session) {
+            return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+        }
+
+        const userId = session.user.id;
+
         const body = await req.json();
 
         const { productId, quantity, type } = body;
@@ -33,6 +44,13 @@ export async function POST(req: Request) {
         // Update stock
         if (type === "sale") {
             if (product.stock < quantity) {
+                // 💸 record stockout loss
+                await Order.create({
+                    productId,
+                    quantity: quantity - product.stock,
+                    type: "sale",
+                    stockout: true,
+                });
                 return NextResponse.json(
                     {
                         error: "Insufficient stock",
@@ -64,6 +82,7 @@ export async function POST(req: Request) {
             productId,
             quantity,
             type,
+            userId,
         });
 
         await Insight.deleteOne({ productId });

@@ -6,6 +6,7 @@ import Link from "next/link";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
+import { SpinnerCustom } from "@/components/Spinner";
 
 export default function Register() {
   const [loading, setLoading] = useState(false);
@@ -24,15 +25,15 @@ export default function Register() {
     }
   }, [status, router]);
   
-  // if (status === "loading") {
-  //   return <h1>Loading......</h1>;
-  // }
+  if (status === "loading") {
+    return <SpinnerCustom/>
+  }
 
   // form states
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState<"user" | "admin" | "supplier">("user");
+  const [role, setRole] = useState<"user" | "supplier">("user");
 
   const register = async (form: {
     name: string;
@@ -123,12 +124,12 @@ export default function Register() {
           className="w-full border p-2 rounded-md"
           value={role}
           onChange={(e) =>
-            setRole(e.target.value as "user" | "admin" | "supplier")
+            setRole(e.target.value as "user"  | "supplier")
           }
         >
           <option value="user">User</option>
           <option value="supplier">Supplier</option>
-          <option value="admin">Admin</option>
+          {/* <option value="admin">Admin</option> */}
         </select>
 
         <Button

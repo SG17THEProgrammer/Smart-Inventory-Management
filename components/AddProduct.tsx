@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 export default function AddProduct({ refresh, setOpen }: any) {
   const [form, setForm] = useState({
@@ -13,6 +14,12 @@ export default function AddProduct({ refresh, setOpen }: any) {
   });
 
   const submit = async () => {
+
+    if(!form.name || !form.sku || form.price <= 0 || form.stock < 0) {
+     toast.error("Please fill all fields");
+      return;
+    }
+
     await fetch("/api/products", {
       method: "POST",
       body: JSON.stringify(form),
