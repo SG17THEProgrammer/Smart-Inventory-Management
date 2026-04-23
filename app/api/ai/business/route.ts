@@ -9,7 +9,7 @@ export async function GET() {
   const products = await Product.find();
   const orders = await Order.find();
 
-  // 🧠 Build demand map
+// Demand Map
   const demandMap: Record<string, number> = {};
 
   orders.forEach((o) => {
@@ -19,7 +19,7 @@ export async function GET() {
     }
   });
 
-  // 🧠 Build insights
+  // 🧠  Insights
   const summary = products.map((p) => {
     const demand = demandMap[p._id.toString()] || 0;
 
@@ -36,7 +36,7 @@ export async function GET() {
     };
   });
 
-  // 🌤 Season detection (simple)
+  // 🌤 Season detection 
   const month = new Date().getMonth();
   let season = "normal";
 

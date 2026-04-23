@@ -5,7 +5,7 @@ const OrderSchema = new mongoose.Schema({
    userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
-      required: true, // ✅ important
+      required: true, 
     },
   quantity: { type: Number, required: true },
   type: { type: String, enum: ["sale", "purchase"]  , required: true},

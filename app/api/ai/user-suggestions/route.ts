@@ -25,7 +25,7 @@ export async function GET() {
   // 📦 All products
   const products = await Product.find();
 
-  // 📊 trending (simple logic: most ordered)
+  // 📊 trending (most ordered)
   const trending = await Order.aggregate([
     { $match: { type: "sale" } },
     { $group: { _id: "$productId", count: { $sum: 1 } } },

@@ -6,7 +6,7 @@ const InsightSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Product",
       required: true,
-      unique: true, // one insight per product
+      unique: true,
     },
     insight: { type: String, required: true },
     demand: { type: Object, required: true },

@@ -7,7 +7,7 @@ const NotificationSchema = new mongoose.Schema(
       ref: "Product",
     },
     userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-    email: String, // or userId later
+    email: String, 
   },
   { timestamps: true }
 );

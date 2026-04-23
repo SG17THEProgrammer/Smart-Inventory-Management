@@ -29,7 +29,7 @@ export async function GET() {
        demandMap[o.productId] =
         (demandMap[o.productId] || 0) + o.quantity;
 
-      // 💸 Stockout loss (if flagged earlier)
+      // 💸 Stockout loss 
       if (o.stockout) {
         stockoutLoss += o.quantity;
       }
@@ -71,7 +71,7 @@ export async function GET() {
     sales,
     purchases,
     trend,
-    profitEstimate: sales * 10, // simple demo logic
+    profitEstimate: sales * 10, // dummy profit calculation
     stockoutLoss,
     classification,
     cashFlow

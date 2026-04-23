@@ -15,48 +15,48 @@ import { toast } from "sonner"
 
 export default function Page() {
 
-  const { data: session , status } = useSession();
+  const { data: session, status } = useSession();
   const pathname = usePathname()
   const [api, setApi] = useState<any>(null)
   const titles = ["AI PROCESSING", "INVENTORY DATA", "DEMAND PREDICTION"]
   const [index, setIndex] = useState(0)
 
   useEffect(() => {
-  if (!api) return;
+    if (!api) return;
 
-  const onSelect = () => {
-    setIndex(api.selectedScrollSnap());
-  };
+    const onSelect = () => {
+      setIndex(api.selectedScrollSnap());
+    };
 
-  api.on("select", onSelect);
-  return () => api.off("select", onSelect);
-}, [api]);
+    api.on("select", onSelect);
+    return () => api.off("select", onSelect);
+  }, [api]);
 
-const intervalRef = useRef(null as any);
+  const intervalRef = useRef(null as any);
 
-useEffect(() => {
-  if (!api || intervalRef.current) return;
+  useEffect(() => {
+    if (!api || intervalRef.current) return;
 
-  intervalRef.current = setInterval(() => {
-    api.scrollNext();
-  }, 4000);
+    intervalRef.current = setInterval(() => {
+      api.scrollNext();
+    }, 4000);
 
-  return () => {
-    if (intervalRef.current) {
-      clearInterval(intervalRef.current);
-      intervalRef.current = null;
-    }
-  };
-}, [api]);
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
+    };
+  }, [api]);
 
 
 
-  const handleLogout =async () => {
+  const handleLogout = async () => {
     toast.success("Logged out successfully");
     await signOut({ callbackUrl: "/login" });
   }
 
-  if(status === "loading") {
+  if (status === "loading") {
     return <SpinnerCustom />
   }
 
@@ -67,10 +67,10 @@ useEffect(() => {
 
       {/* Navbar */}
       <Navbar
-      pathname={pathname}
-      // status={status}
-      // session={session}
-      handleLogout={handleLogout}
+        pathname={pathname}
+        // status={status}
+        // session={session}
+        handleLogout={handleLogout}
       />
 
       {/* Hero Section */}
@@ -105,7 +105,7 @@ useEffect(() => {
 
           {/* CAROUSEL */}
           <Carousel
-          // api={api}
+            // api={api}
             setApi={setApi}
             opts={{
               loop: true,   // 🔥 THIS FIXES YOUR ISSUE
@@ -204,7 +204,7 @@ useEffect(() => {
           Join small businesses already optimizing their inventory with AI.
         </p>
 
-        {status === "authenticated" ? ""  :<><div className="mt-6 flex justify-center gap-4">
+        {status === "authenticated" ? "" : <><div className="mt-6 flex justify-center gap-4">
           <Link href="/register">
             <Button className="bg-white text-black cursor-pointer hover:bg-gray-400 hover:text-white">Get Started</Button>
           </Link>
@@ -214,6 +214,38 @@ useEffect(() => {
           </Link>
         </div></>}
       </div>
+
+      {/* Footer */}
+      <footer className="w-full border-t mt-10 py-6 bg-gradient-to-br from-purple-900 via-fuchsia-800 to-pink-700">
+        <div className="max-w-6xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between text-sm text-white">
+
+          {/* Name */}
+          <p className="mb-2 md:mb-0">
+            © {new Date().getFullYear()} Shray Gupta
+          </p>
+
+          {/* Links */}
+          <div className="flex gap-4">
+            <a
+              href="https://github.com/SG17THEProgrammer"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-gray-300 transition"
+            >
+              GitHub
+            </a>
+
+            <a
+              href="http://linkedin.com/in/shray-gupta-672a92224/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-gray-300 transition"
+            >
+              LinkedIn
+            </a>
+          </div>
+        </div>
+      </footer>
 
     </div>
   )

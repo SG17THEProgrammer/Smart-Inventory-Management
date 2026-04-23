@@ -90,7 +90,7 @@ export default function Register() {
 
 
     if (result) {
-      // optional redirect
+      //  redirect
       window.location.href = "/login";
     }
   };

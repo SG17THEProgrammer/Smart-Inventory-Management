@@ -58,7 +58,7 @@ export default function Dashboard() {
   }, [role]);
 
 
-  // ✅ AUTH GUARD (safe redirect)
+  // ✅ AUTH GUARD
   useEffect(() => {
     if (status === "unauthenticated" && !hasShownToast.current) {
       hasShownToast.current = true;
@@ -88,7 +88,7 @@ export default function Dashboard() {
   }, [page])
 
   // --------------------
-  // EARLY RETURN (ONLY AFTER ALL HOOKS)
+  // EARLY RETURN
   // --------------------
   if (status === "loading") {
     return <SpinnerCustom />;

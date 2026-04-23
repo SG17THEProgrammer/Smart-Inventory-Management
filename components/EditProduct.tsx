@@ -42,7 +42,7 @@ export default function EditProduct({
     }
 
     toast.success("Updated successfully");
-    onClose();   // close modal
+    onClose();   // close 
     onDone();
   };
 

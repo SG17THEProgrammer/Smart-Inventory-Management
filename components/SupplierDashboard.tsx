@@ -158,7 +158,7 @@ export default function SupplierDashboard() {
                             size={"sm"}
                             onClick={() => {
                                 setSelectedProduct(p);
-                                setQuantity(0); // default
+                                setQuantity(0); 
                                 setOpen(true);
                             }}
                             className="cursor-pointer"
@@ -218,7 +218,7 @@ export default function SupplierDashboard() {
                                     size={"sm"}
                                     onClick={() => {
                                         setSelectedProduct(p);
-                                        setQuantity(0); // default
+                                        setQuantity(0); 
                                         setOpen(true);
                                     }}
                                 >

@@ -32,7 +32,7 @@ export async function GET(req: Request, context: any) {
       );
     }
 
-    // 🔍 2. Check cached insight
+    // 🔍 2. cached insight
     const cached = await Insight.findOne({ productId });
 
     if (cached) {
@@ -50,7 +50,7 @@ export async function GET(req: Request, context: any) {
       }
     }
 
-    // 📊 3. Generate fresh demand
+    // 📊 3. fresh demand
     const demand = await getProductDemand(productId);
 
     const stockoutDays = getStockoutDays(
@@ -65,7 +65,7 @@ export async function GET(req: Request, context: any) {
       stockoutDays,
     });
 
-    // 🤖 4. Generate AI insight
+    // 🤖 4. AI insight
     const insightText = await getAIInsight({
       product: {
         name: product.name,

@@ -50,7 +50,7 @@ export default function ShopPage() {
         if (res.ok) {
             toast.success("Purchase successful!");
             setQuantities((prev) => ({ ...prev, [productId]: 1 }));
-            load(); // Refresh products to update stock
+            load(); // Refresh products 
         } else {
             const data = await res.json();
             toast.error(`Purchase failed: ${data.error || "Unknown error"}`);

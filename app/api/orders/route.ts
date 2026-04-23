@@ -68,11 +68,11 @@ export async function POST(req: Request) {
             const notifications = await Notification.find({ productId });
 
             for (const n of notifications) {
-                //send email logic here (omitted for brevity)
+                //send email  
                 console.log(`Notify ${n.email}: Product back in stock`);
             }
 
-            // optional: clear notifications
+            // clear notifications
             await Notification.deleteMany({ productId });
         }
 
