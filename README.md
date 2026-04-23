@@ -1,38 +1,352 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🚀 Smart Inventory + Demand Forecasting System
 
-## Getting Started
+A **AI-powered inventory management system** built for small businesses and shops to **prevent overstocking, reduce stockouts, and improve decision-making**.
 
-First, run the development server:
+---
+
+# 🧠 Problem Statement
+
+Small businesses often face:
+
+* ❌ Overstocking → leads to waste and capital lock
+* ❌ Stockouts → lost sales and unhappy customers
+* ❌ No demand prediction → purely manual decisions
+* ❌ No analytics → no visibility into profit, trends, or performance
+
+---
+
+# 💡 Solution
+
+This system provides:
+
+* 📦 Full inventory management (CRUD)
+* 🤖 AI-powered insights & recommendations
+* 📊 Analytics dashboard (profit, trends, stock behavior)
+* 🔄 Real-world supply chain workflow (Admin ↔ Supplier)
+* 🛒 Customer-facing shop experience
+
+---
+
+# 🏗️ Tech Stack
+
+### Frontend + Backend
+
+* Next.js 16 (App Router)
+* TypeScript
+* Tailwind CSS
+
+### UI
+
+* ShadCN UI (Radix-based components)
+
+### Backend
+
+* API Routes (Next.js server functions)
+
+### Database
+
+* MongoDB + Mongoose
+
+### Authentication
+
+* NextAuth.js (JWT strategy)
+
+### AI Integration
+
+* Groq API (Llama 3.3 70B Versatile)
+
+---
+
+# 🔐 Authentication & Authorization
+
+### Roles in the System:
+
+| Role     | Description                              |
+| -------- | ---------------------------------------- |
+| Admin    | Business owner (full control)            |
+| Supplier | Handles restocking & product suggestions |
+| User     | Customer (buys products)                 |
+
+---
+
+## 🧑‍💼 Admin Permissions
+
+* ✅ Full CRUD (Products, Orders)
+* ✅ View analytics dashboard
+* ✅ AI insights & business advisor
+* ✅ Request stock (cannot directly modify stock)
+* ✅ Approve supplier product suggestions
+* ✅ View all users & system data
+
+---
+
+## 👨‍🏭 Supplier Permissions
+
+* ✅ View all products
+* ✅ View low-stock products
+* ✅ Approve restock requests
+* ✅ Suggest new products
+* ❌ Cannot access analytics dashboard
+* ❌ Cannot directly modify product data
+
+---
+
+## 🛒 User Permissions
+
+* ✅ View available products
+* ✅ Buy products
+* ✅ Get notified when out-of-stock items return (Email integration in version 2)
+* ✅ Receive AI recommendations
+* ❌ No access to analytics or backend controls
+
+---
+
+# 🔄 Core Features
+
+---
+
+## 📦 Product Management
+
+* Create, update, delete products
+* Track stock, price, SKU, threshold
+
+---
+
+## 🧾 Order System
+
+Two types:
+
+* `sale` → customer purchase
+* `purchase` → stock acquisition (via supplier flow)
+
+Includes:
+
+* user tracking (`userId`)
+* stock validation
+* stockout detection
+
+---
+
+## 🔄 Restock Workflow (Key Feature)
+
+### Flow:
+
+1. Admin requests stock
+2. Supplier reviews request
+3. Supplier approves → stock increases
+
+👉 Admin **cannot directly change stock** (Version 2 implementation).
+For easiness admin can increase stock.
+
+---
+
+## 🧠 AI Features
+
+---
+
+### 1. AI Insights (Per Product)
+
+* Demand trends
+* Stock movement analysis
+* AI-generated explanations
+
+---
+
+### 2. AI Business Advisor
+
+* Smart suggestions for inventory decisions
+* Detects:
+
+  * slow-moving items
+  * high-demand products
+  * risk of stockout
+
+---
+
+### 3. AI User Recommendations
+
+* Based on:
+
+  * purchase history
+  * trending products
+  * availability
+  * seasonality
+
+---
+
+## 🔔 Notification System
+
+* Users can subscribe to out-of-stock products
+* Notified when product becomes available
+* Note : Email Integration is still pending : Will be done in version 2
+
+---
+
+## 📊 Analytics Dashboard
+
+Includes:
+
+* 📈 Demand trends
+* 💰 Profit insights (sample right now not actual : actual will be done when we have enough data to work with)
+* 🧊 Fast / slow / dead stock classification
+* 📉 Stockout loss tracking
+
+---
+
+## 🏪 User Shop Experience
+
+* Clean product listing
+* Buy button (only if in stock)
+* Notify option (if out of stock)
+* Personalized recommendations
+
+---
+
+# 🧱 Project Structure
+
+```
+app/
+ ├── api/
+ │   ├── products/
+ │   ├── orders/
+ │   ├── restock/
+ │   ├── insights/
+ │   ├── ai/
+ │   └── auth/
+ ├── dashboard/
+ ├── shop/
+ ├── supplier/
+ ├── admin/
+
+models/
+ ├── Product.ts
+ ├── Order.ts
+ ├── User.ts
+ ├── RestockRequest.ts
+ ├── ProductSuggestion.ts
+ ├── Notification.ts
+
+lib/
+ ├── db.ts
+ ├── auth.ts
+
+types/
+ ├── next-auth.d.ts
+```
+
+---
+
+# ⚙️ Environment Variables
+
+Create `.env.local`
+
+```env
+MONGODB_URI=your_mongodb_connection
+NEXTAUTH_SECRET=your_secret
+GROQ_API_KEY=your_groq_api_key
+```
+
+---
+
+# 🛠️ Run Locally
+
+---
+
+## 1. Clone Repository
+
+```bash
+git clone https://github.com/YOUR_USERNAME/YOUR_REPO.git
+cd YOUR_REPO
+```
+
+---
+
+## 2. Install Dependencies
+
+```bash
+npm install
+```
+
+---
+
+## 3. Setup Environment Variables
+
+Create `.env.local` and add values
+
+---
+
+## 4. Run Development Server
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 5. Open in Browser
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+http://localhost:3000
+```
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+# 🚀 Deployment
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```
+https://smart-inventory-management-six.vercel.app/
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+# 🔐 Security Considerations
 
-## Deploy on Vercel
+* Role-based access control (RBAC)
+* Input validation using Zod
+* Password hashing (bcrypt)
+* Protected API routes
+* JWT session management
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+# 📈 Advanced Concepts Used
 
-Website : https://smart-inventory-management-six.vercel.app/
+* Server-side rendering (SSR)
+* API route architecture
+* MongoDB aggregation (analytics)
+* AI integration in real workflows
+* Scalable modular structure
+
+---
+
+
+# 🧪 Testing
+
+Use:
+
+* Postman
+
+Test endpoints:
+
+* `/api/products`
+* `/api/orders`
+* `/api/restock`
+* `/api/ai/*`
+
+---
+
+# ⚠️ Known Limitations
+
+* Notification system is basic (no email/SMS yet)
+* AI recommendations depend on available data
+* No payment integration (can be added)
+* Product price is not taken into consideration.
+
+---
+
+# 🚀 Future Improvements
+
+* Email/SMS notifications
+* Payment gateway integration
+* Real-time updates (WebSockets)
+* Advanced forecasting models
+* Supplier performance tracking
+* Price addition
