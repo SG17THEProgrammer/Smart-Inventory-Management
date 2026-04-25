@@ -12,6 +12,7 @@ import {
 } from "recharts";
 
 export default function AnalyticsCharts({ data }: any) {
+  console.log("AnalyticsCharts data:", data);
   return (
     <div className="space-y-6">
 

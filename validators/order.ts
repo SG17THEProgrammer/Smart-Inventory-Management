@@ -12,5 +12,4 @@ export const orderSchema = z.object({
     .positive("Quantity must be greater than 0")
 ),
 
-  type: z.enum(["sale", "purchase"]),
 });

@@ -1,4 +1,4 @@
-import NextAuth from "next-auth/next";
+import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import clientPromise from "@/lib/db";
 import bcrypt from "bcryptjs";
@@ -67,6 +67,8 @@ const authOptions = {
       return session;
     },
   },
+
+  secret: process.env.NEXTAUTH_SECRET,
 };
 
 const handler = NextAuth(authOptions);

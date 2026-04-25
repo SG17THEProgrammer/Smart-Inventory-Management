@@ -4,21 +4,23 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { useSession } from "next-auth/react";
-export default function AddOrder({ productId, onDone }: any) {
+export default function AddOrder({ productId}: any) {
     const { data: session } = useSession();
     const role = (session?.user as any)?.role;
     const [loading, setLoading] = useState(false);
-    const [qty, setQty] = useState(1);
+    const [qty, setQty] = useState("");
 
-    const createOrder = async (type: string) => {
+    const restock = async () => {
         setLoading(true);
 
-        const res = await fetch("/api/orders", {
+        const res = await fetch("/api/restock", {
             method: "POST",
             body: JSON.stringify({
                 productId,
                 quantity: qty,
-                type,
+                // type,
+                requestedBy: session?.user.id,
+                status : "pending"
             }),
         });
 
@@ -44,39 +46,31 @@ export default function AddOrder({ productId, onDone }: any) {
         //             : "Stock updated",
         // });
 
-        toast.success(type === "sale"
-            ? "Product sold successfully"
-            : "Stock updated");
+        toast.success("Restock request created successfully");
 
-        onDone();
+        // onDone();
     };
+
+
 
     return (
         <div className="space-y-3">
             <input
                 type="number"
+                name="qty"
                 value={qty}
-                onChange={(e) => setQty(Number(e.target.value))}
+                onChange={(e) => setQty(e.target.value)}
                 className="border p-2 w-full"
             />
 
-            <div className="flex gap-2">
-                {role==="supplier" ? "":<Button
-                    onClick={() => createOrder("sale")}
+                <Button
+                    onClick={() => restock()}
                     disabled={loading}
-                    className="bg-red-500 cursor-pointer hover:bg-red-600"
+                    className=" cursor-pointer hover:bg-gray-600"
                 >
                     {loading ? "Processing..." : "Order this product"}
-                </Button>}
+                </Button>
 
-               {role==="supplier"? <Button
-                    onClick={() => createOrder("purchase")}
-                    disabled={loading}
-                    className="bg-green-500 cursor-pointer"
-                >
-                    {loading ? "Processing..." : "Add items in the stock"}
-                </Button>:""}
-            </div>
         </div>
     );
 }

@@ -139,15 +139,15 @@ export default function Dashboard() {
       <div
         className={
           selected
-            ? "grid grid-cols-[30%_70%] gap-2 px-2"
-            : "flex flex-col gap-2 px-2"
+            ? "grid grid-cols-[30%_70%] gap-2 px-2 mt-4"
+            : "grid grid-cols-[25%_75%] gap-2 px-2 mt-4"
         }>
-        <Card className="p-4 mt-4">
+        <Card className="p-4 mb-8">
           <OrderList selected={selected} />
         </Card>
 
         {selected && (
-          <Card className="p-4 mr-4 mt-4">
+          <Card className="p-4 mr-3">
             <AnalyticsCharts data={analyticsData} />
           </Card>
         )}

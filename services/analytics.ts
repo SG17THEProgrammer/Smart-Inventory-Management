@@ -3,7 +3,7 @@ import Order from "@/models/Orders";
 export async function getProductDemand(productId: string) {
   const orders = await Order.find({
     productId,
-    type: "sale",
+    // type: "sale",
   })
     .sort({ createdAt: -1 })
     .limit(7);

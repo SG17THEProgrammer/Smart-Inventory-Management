@@ -67,6 +67,7 @@ This system provides:
 | Supplier | Handles restocking & product suggestions |
 | User     | Customer (buys products)                 |
 
+
 ---
 
 ## 🧑‍💼 Admin Permissions

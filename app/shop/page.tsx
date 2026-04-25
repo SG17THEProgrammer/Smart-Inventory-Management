@@ -43,7 +43,7 @@ export default function ShopPage() {
             body: JSON.stringify({
                 productId,
                 quantity,
-                type: "sale",
+                // type: "sale",
             }),
         });
 

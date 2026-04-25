@@ -6,7 +6,7 @@ import { Button } from "./ui/button";
 
 export default function OrderList({ selected }: { selected: any }) {
   const [orders, setOrders] = useState<any[]>([]);
-  const [filterType, setFilterType] = useState<"sale" | "purchase" | "all">("all");
+  // const [filterType, setFilterType] = useState<"sale" | "purchase" | "all">("all");
 
   const load = async () => {
     const res = await fetch("/api/orders");
@@ -14,44 +14,49 @@ export default function OrderList({ selected }: { selected: any }) {
     setOrders(data);
   };
 
-  const filteredOrders =
-  filterType === "all"
-    ? orders
-    : orders.filter((o) => o.type === filterType);
+//   const filteredOrders =
+//   filterType === "all"
+//     ? orders
+//     : orders.filter((o) => o.type === filterType);
 
 
- const handleFilter = (type: "sale" | "purchase" | "all") => {
-  setFilterType(type);
-};
+//  const handleFilter = (type: "sale" | "purchase" | "all") => {
+//   setFilterType(type);
+// };
 
   useEffect(() => {
     load();
   }, []);
-
+console.log(orders);
   return (
-    <div className="space-y-3 h-fit">
+    <div className="space-y-3 h-fit ">
       <div className="flex">
       <h2 className="text-lg font-semibold mr-4">Recent Orders</h2>
       <div className="flex flex-centre">
-        <Button size="sm" className={filterType === "all" ? "mr-2 bg-blue-500 text-white" : "mr-2 cursor-pointer"} variant={"outline"} onClick={()=>handleFilter("all")}>All</Button>
-        <Button size="sm" className={filterType === "sale" ? "mr-2 bg-blue-500 text-white" : "mr-2 cursor-pointer"} variant={"outline"} onClick={()=>handleFilter("sale")}>Sales</Button>
-<Button size="sm" className={filterType === "purchase" ? "bg-blue-500 text-white" : "cursor-pointer"} variant={"outline"} onClick={()=>handleFilter("purchase")}>Purchase</Button>
+        {/* <Button size="sm" className={filterType === "all" ? "mr-2 bg-blue-500 text-white" : "mr-2 cursor-pointer"} variant={"outline"} onClick={()=>handleFilter("all")}>All</Button>
+        <Button size="sm" className={filterType === "sale" ? "mr-2 bg-blue-500 text-white" : "mr-2 cursor-pointer"} variant={"outline"} onClick={()=>handleFilter("sale")}>Sales</Button> */}
+{/* <Button size="sm" className={filterType === "purchase" ? "bg-blue-500 text-white" : "cursor-pointer"} variant={"outline"} onClick={()=>handleFilter("purchase")}>Purchase</Button> */}
       </div>
       </div>
-<div className={selected ? "grid grid-cols-2 gap-4" : "grid grid-cols-6 gap-4"}>
+<div className="grid grid-cols-2 gap-2" >
 
-      {filteredOrders?.map((o) => (
+      {orders?.map((o) => (
         <Card key={o._id} className="p-3">
           <p className="text-sm">
-            {o.type.toUpperCase()} — Qty: {o.quantity}
+            Product : {o.productId.name} <br /> Qty: {o.quantity}
           </p>
           <p className="text-xs text-gray-500">
             {new Date(o.createdAt).toLocaleString()}
           </p>
+          <p className="text-xs text-gray-500">
+            By : <br /> 
+            {o.userId.name} <br />
+            {o.userId.email}
+          </p>
         </Card>
       ))}
 
-      {filteredOrders?.length === 0 && (
+      {orders?.length === 0 && (
         <p className="text-sm text-gray-500">No orders yet</p>
       )}
           </div>

@@ -8,7 +8,6 @@ const OrderSchema = new mongoose.Schema({
       required: true, 
     },
   quantity: { type: Number, required: true },
-  type: { type: String, enum: ["sale", "purchase"]  , required: true},
 }, { timestamps: true });
 
 export default mongoose.models.Order || mongoose.model("Order", OrderSchema);

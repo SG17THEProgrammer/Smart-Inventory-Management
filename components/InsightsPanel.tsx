@@ -105,14 +105,16 @@ export default function InsightsPanel({ product, refreshProducts }: any) {
             </Card>
 
             {/* Actions */}
-            {/* <Card className="p-4">
+            <Card className="p-4">
                 <h3 className="font-semibold mb-2">Actions</h3>
 
-                <AddOrder productId={product._id} onDone={() => {
-                    loadInsights();
-                    refreshProducts();
-                }} />
-            </Card> */}
+                <AddOrder productId={product._id} 
+                // onDone={() => {
+                //     loadInsights();
+                //     refreshProducts();
+                // }}
+                 />
+            </Card>
 
             
 

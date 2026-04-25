@@ -19,7 +19,7 @@ export async function GET() {
   // 🧾 User purchase history
   const orders = await Order.find({
     userId,
-    type: "sale",
+    // type: "sale",navba
   }).populate("productId");
 
   // 📦 All products

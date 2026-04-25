@@ -41,6 +41,11 @@ const Navbar = ({ pathname, handleLogout }: NavbarProps) => {
                     {pathname === "/shop" ? "" : role === "user" || role === "admin" ? "Shop" : ""}
                 </Link>
 
+                <Link href="/orders"
+                >
+                    {pathname === "/orders" ? "" : role === "admin" ? "Orders" : ""}
+                </Link>
+
                 <Link href="/admin/suggestions"
                     className={pathname === "/admin/suggestions" ? "underline" : ""}
                 >
@@ -67,11 +72,11 @@ const Navbar = ({ pathname, handleLogout }: NavbarProps) => {
                 </Link>
 
                 {status === "authenticated" && (
-                    <div className={pathname === "/dashboard" || pathname === "/businessAdvisor" || pathname === "/supplier" || pathname === "/admin/suggestions" || pathname === "/shop" ? "flex flex-col text-black leading-tight border rounded px-2 py-1" : "flex flex-col text-white leading-tight border rounded px-2 py-1"}>
+                    <div className={pathname === "/dashboard" || pathname === "/businessAdvisor" || pathname === "/supplier" || pathname === "/admin/suggestions" || pathname === "/shop" || pathname === "/orders" ? "flex flex-col text-black leading-tight border rounded px-2 py-1" : "flex flex-col text-white leading-tight border rounded px-2 py-1"}>
                         <span className="text-sm font-semibold">
                             {name || "No Name"} {role === "admin" ? "(Admin)" : role === "supplier" ? "(Supplier)" : "(User)"}
                         </span>
-                        <span className={pathname === "/dashboard" || pathname === "/businessAdvisor" || pathname === "/supplier" || pathname === "/admin/suggestions" || pathname === "/shop" ? "text-xs text-gray-600" : "text-xs text-gray-200"}>
+                        <span className={pathname === "/dashboard" || pathname === "/businessAdvisor" || pathname === "/supplier" || pathname === "/admin/suggestions" || pathname === "/shop" || pathname === "/orders" ? "text-xs text-gray-600" : "text-xs text-gray-200"}>
                             {email}
                         </span>
                     </div>

@@ -19,6 +19,14 @@ export default function SupplierDashboard() {
     const [open, setOpen] = useState(false);
     const [selectedProduct, setSelectedProduct] = useState<any>(null);
     const [quantity, setQuantity] = useState(0);
+    const [requests, setRequests] = useState([]);
+
+    const loadRequests: any = async () => {
+        const res = await fetch("/api/restock/requests");
+        const data = await res.json();
+        setRequests(data);
+    };
+
     const [newProduct, setNewProduct] = useState({
         name: "",
         sku: "",
@@ -40,6 +48,10 @@ export default function SupplierDashboard() {
         load();
     }, []);
 
+    useEffect(() => {
+        loadRequests();
+    }, []);
+
     const restock = async () => {
         if (!selectedProduct) return;
 
@@ -48,7 +60,7 @@ export default function SupplierDashboard() {
             body: JSON.stringify({
                 productId: selectedProduct._id,
                 quantity,
-                type: "purchase",
+                // type: "purchase",
             }),
         });
 
@@ -58,6 +70,23 @@ export default function SupplierDashboard() {
         setSelectedProduct(null);
         load();
     };
+
+    const approve = async (id: string, action: string) => {
+        const res = await fetch(`/api/restock/${id}`, {
+            method: "PUT",
+            body: JSON.stringify({ action }),
+        });
+
+        if (res.ok) {
+            toast.success(`Request ${action}ed`);
+        }        else {
+            toast.error(`Failed to ${action} request`);
+        }
+
+        loadRequests();
+        load(); // refresh products also
+    };
+
     return (
         <>
             <Navbar
@@ -108,7 +137,7 @@ export default function SupplierDashboard() {
                     <Button
                         className="bg-black hover:bg-gray-900 text-white px-5 py-2 rounded-lg transition cursor-pointer"
                         onClick={async () => {
-                            if(!newProduct.name || !newProduct.sku || !newProduct.price){
+                            if (!newProduct.name || !newProduct.sku || !newProduct.price) {
                                 toast.error("Please fill all fields");
                                 return;
                             }
@@ -119,7 +148,7 @@ export default function SupplierDashboard() {
                             if (res.ok) {
                                 toast.success("Product suggestion submitted");
                                 setNewProduct({ name: "", sku: "", price: "" });
-                              
+
                             } else {
                                 toast.error("Failed to submit product suggestion");
                             }
@@ -134,45 +163,45 @@ export default function SupplierDashboard() {
                 <h1 className="text-xl font-bold">
                     🔴 Low Stock Products
                 </h1>
-                <div className="grid grid-cols-4 gap-4">
+                <div className="grid grid-cols-8 gap-4">
 
-                {products.map((p) => (
-                    <div
-                        key={p._id}
-                        className="flex justify-between border p-3 rounded"
-                    >
-                        <div>
-                            <p className="font-medium">{p.name}</p>
-                            <p
-                                className={
-                                    p.stock < p.threshold
-                                        ? "text-red-500"
-                                        : "text-green-600"
-                                }
-                            >
-                                Stock: {p.stock} / {p.threshold}
-                            </p>
-                        </div>
-
-                        <Button
-                            size={"sm"}
-                            onClick={() => {
-                                setSelectedProduct(p);
-                                setQuantity(0); 
-                                setOpen(true);
-                            }}
-                            className="cursor-pointer"
+                    {products.map((p) => (
+                        <div
+                            key={p._id}
+                            className="flex justify-between border p-3 rounded"
                         >
-                            Restock
-                        </Button>
-                    </div>
-                ))}
+                            <div>
+                                <p className="font-medium">{p.name}</p>
+                                <p
+                                    className={
+                                        p.stock < p.threshold
+                                            ? "text-red-500"
+                                            : "text-green-600"
+                                    }
+                                >
+                                    Stock: {p.stock} / {p.threshold}
+                                </p>
+                            </div>
+
+                            {/* <Button
+                                size={"sm"}
+                                onClick={() => {
+                                    setSelectedProduct(p);
+                                    setQuantity(0);
+                                    setOpen(true);
+                                }}
+                                className="cursor-pointer"
+                            >
+                                Restock
+                            </Button> */}
+                        </div>
+                    ))}
                 </div>
 
-                <h2 className="text-lg font-semibold mt-8">
+                <h2 className=" mt-8 text-xl font-bold">
                     📦 All Products
                 </h2>
-                <div className="grid grid-cols-5 gap-4 border border-black-200">
+                <div className="grid grid-cols-10 gap-4">
                     {open ? <Dialog open={open} onOpenChange={setOpen}>
                         <DialogContent>
                             <DialogHeader>
@@ -212,21 +241,53 @@ export default function SupplierDashboard() {
                                 </p>
                             </div>
                             <div>
-                                <Button
+                                {/* <Button
                                     className="cursor-pointer"
 
                                     size={"sm"}
                                     onClick={() => {
                                         setSelectedProduct(p);
-                                        setQuantity(0); 
+                                        setQuantity(0);
                                         setOpen(true);
                                     }}
                                 >
                                     Restock
-                                </Button>
+                                </Button> */}
                             </div>
                         </div>
                     ))}
+                </div>
+
+
+                <div className="space-y-4 mt-8 text-xl font-bold">
+                    <h2 className="font-bold">📦 Restock Requests</h2>
+
+                    {requests.length > 0 ? requests.map((r: any) => (
+                        <div
+                            key={r._id}
+                            className="border p-4 rounded flex items-center justify-between"
+                        >
+                            <div>
+                                <p>{r.productId.name}</p>
+                                <p>Qty: {r.quantity}</p>
+                            </div>
+                            <div>
+
+                                <Button
+                                    onClick={() => approve(r._id, "approve")}
+                                    className=" px-3 py-1 rounded mr-3 hover:bg-green-700 cursor-pointer"
+                                >
+                                    Approve
+                                </Button>
+                                <Button
+                                    onClick={() => approve(r._id, "reject")}
+                                    className=" px-3 py-1 rounded hover:bg-red-700 cursor-pointer"
+                                >
+                                    Reject
+                                </Button>
+                            </div>
+                        </div>
+                    )) : <p className="text-gray-500">No pending requests</p>}
                 </div>
             </div>
         </>

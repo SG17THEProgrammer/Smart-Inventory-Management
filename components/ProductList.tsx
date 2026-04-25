@@ -85,7 +85,7 @@ export default function ProductList({
                             : "text-green-600"
                         }`}
                       >
-                        Stock: {p.stock}
+                        Stock: {p.stock} / {p.threshold}
                       </p>
                     </div>
                   )}
