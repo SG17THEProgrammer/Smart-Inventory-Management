@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import Navbar from "@/components/Navbar";
+import { signOut } from "next-auth/react";
+import { toast } from "sonner";
 const orders = () => {
     const [userOrders, setUserOrders] = useState<any[]>([]);
     const [restockOrders, setRestockOrders] = useState<any[]>([]);
@@ -49,7 +51,10 @@ const orders = () => {
     return (
         <>
             <Navbar
-                handleLogout={() => { }}
+                handleLogout={async () => {
+                          await signOut({ callbackUrl: "/login" });
+                          toast.success("Logged out successfully");
+                        }}
                 pathname="/orders"
             />
             <div className="grid gap-6 md:grid-cols-2 mt-4 mx-4">

@@ -93,6 +93,7 @@ export default function SupplierDashboard() {
                 pathname="/supplier"
                 handleLogout={async () => {
                     await signOut({ callbackUrl: "/login" });
+                    toast.success("Logged out successfully");
                 }}        ></Navbar>
 
             <div className="p-6 bg-white rounded-2xl shadow-md mx-4 w-90%">

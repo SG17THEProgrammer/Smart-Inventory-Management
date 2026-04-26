@@ -103,6 +103,7 @@ export default function Dashboard() {
         // session={session}
         handleLogout={async () => {
           await signOut({ callbackUrl: "/login" });
+          toast.success("Logged out successfully");
         }}
       />
       <div className="flex">

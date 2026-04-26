@@ -12,11 +12,20 @@ import {
 } from "recharts";
 
 export default function AnalyticsCharts({ data }: any) {
-  console.log("AnalyticsCharts data:", data);
+  if (!data) return null;
+
+  const topProducts =
+    data?.highDemand?.map(([name, value]: any) => ({
+      name,
+      value,
+    })) || [];
+
+  const chartWidth = Math.max(300, topProducts.length * 80);
+
   return (
     <div className="space-y-6">
 
-      {/* Demand Trend */}
+      {/* 📈 DEMAND TREND */}
       <div className="bg-white p-4 rounded-xl shadow">
         <h3 className="font-semibold mb-2">Demand Trend</h3>
 
@@ -25,79 +34,102 @@ export default function AnalyticsCharts({ data }: any) {
             <XAxis dataKey="date" />
             <YAxis />
             <Tooltip />
-            <Line type="monotone" dataKey="demand" />
+            <Line type="monotone" dataKey="value" />
           </LineChart>
         </ResponsiveContainer>
       </div>
 
-      {/* Sales vs Purchases */}
+      {/* 🟢 HIGH DEMAND PRODUCTS */}
       <div className="bg-white p-4 rounded-xl shadow">
-        <h3 className="font-semibold mb-2">Stock Flow</h3>
+        <h3 className="font-semibold mb-4">Top Selling Products</h3>
 
-        <ResponsiveContainer width="100%" height={300}>
-          <BarChart
-            data={[
-              { name: "Sales", value: data?.sales },
-              { name: "Purchases", value: data?.purchases },
-            ]}
+        <div className="overflow-x-auto">
+          <div
+            style={{
+              width: `${chartWidth}px`,
+              margin: "0 auto",
+            }}
           >
-            <XAxis dataKey="name" />
-            <YAxis />
-            <Tooltip />
-            <Bar dataKey="value" />
-          </BarChart>
-        </ResponsiveContainer>
+            <ResponsiveContainer width="100%" height={250}>
+              <BarChart data={topProducts}>
+                <XAxis dataKey="name" />
+                <YAxis allowDecimals={false} />
+                <Tooltip />
+
+                <Bar
+                  dataKey="value"
+                  radius={[8, 8, 0, 0]}
+                  maxBarSize={40} // 🔥 KEY FIX
+                />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
       </div>
 
+      {/* 📊 KEY METRICS */}
       <div className="grid grid-cols-3 gap-3">
-        {/* Profit */}
+
+        {/* Orders */}
+        <div className="bg-blue-50 p-4 rounded-xl">
+          <h3 className="font-semibold">Total Orders</h3>
+          <p className="text-xl font-bold">
+            {data.metrics.totalOrders}
+          </p>
+        </div>
+
+        {/* Revenue */}
         <div className="bg-green-50 p-4 rounded-xl">
-          <h3 className="font-semibold">Estimated Profit</h3>
+          <h3 className="font-semibold">Revenue</h3>
+          <p className="text-[11px]">(Dummy as price is not taken under consideration right now)</p>
           <p className="text-xl font-bold">
-            ₹ {data?.profitEstimate}
+            ₹ {data.metrics.totalRevenue}
           </p>
         </div>
 
-        {/* Cash Flow */}
-        <div className={`p-4 rounded-xl ${data.cashFlow >= 0 ? "bg-green-50" : "bg-red-50"
-          }`}>
-          <h3 className="font-semibold">Cash Flow</h3>
-          <p className="text-xl font-bold">
-            ₹ {data.cashFlow}
-          </p>
-        </div>
-
-        {/* Stock out Loss */}
+        {/* Stockouts */}
         <div className="bg-red-50 p-4 rounded-xl">
-          <h3 className="font-semibold">Stockout Loss</h3>
+          <h3 className="font-semibold">Stockouts</h3>
           <p className="text-xl font-bold">
-            {data.stockoutLoss} units missed
+            {data.metrics.stockouts}
           </p>
         </div>
       </div>
 
-
-
-      {/* classification */}
+      {/* 📦 INVENTORY HEALTH */}
       <div className="bg-white p-4 rounded-xl shadow">
-        <h3 className="font-semibold mb-2">
-          Inventory Health
+        <h3 className="font-semibold mb-3">Inventory Health</h3>
+
+        {/* 🔴 Dead Stock */}
+        <div className="mb-3">
+          <h4 className="text-red-600 font-medium">Dead Stock</h4>
+          {data.deadStock.map((p: any) => (
+            <div key={p._id} className="text-sm">
+              {p.name}
+            </div>
+          ))}
+        </div>
+
+        {/* 🟡 Slow Stock */}
+        <div>
+          <h4 className="text-yellow-600 font-medium">Slow Moving</h4>
+          {data.slowStock.map((p: any) => (
+            <div key={p._id} className="text-sm">
+              {p.name}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* 🔴 LOW STOCK ALERT */}
+      <div className="bg-red-50 p-4 rounded-xl shadow">
+        <h3 className="font-semibold mb-2 text-red-600">
+          Low Stock Alerts
         </h3>
 
-        {data.classification.map((p: any, i: number) => (
-          <div key={i} className="flex justify-between text-sm">
-            <span>{p.name}</span>
-            <span
-              className={
-                p.status === "fast-moving"
-                  ? "text-green-600"
-                  : p.status === "dead-stock"
-                    ? "text-red-600"
-                    : "text-yellow-600"
-              }
-            >
-              {p.status}
-            </span>
+        {data.lowStock.map((p: any) => (
+          <div key={p._id} className="text-sm">
+            {p.name} → {p.stock}
           </div>
         ))}
       </div>

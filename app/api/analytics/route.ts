@@ -1,79 +1,85 @@
 import { NextResponse } from "next/server";
 import { connectDB } from "@/lib/db";
+import Product from "@/models/Products";
 import Order from "@/models/Orders";
-import Products from "@/models/Products";
 
 export async function GET() {
   await connectDB();
 
-  const orders = await Order.find();
-  const products = await Products.find();
+  const products = await Product.find();
+  const orders = await Order.find().populate("productId");
 
+  // 🔴 LOW STOCK
+  const lowStock = products.filter(
+    (p) => p.stock <= p.threshold
+  );
 
-  let sales = 0;
-  let purchases = 0;
-
-  const daily: Record<string, number> = {};
+  // 📊 DEMAND
   const demandMap: Record<string, number> = {};
-  let stockoutLoss = 0;
 
-  orders.forEach((o) => {
-    const date = new Date(o.createdAt).toISOString().split("T")[0];
+  orders.forEach((o: any) => {
+    const name = o.productId?.name;
+    if (!name) return;
 
-    if (!daily[date]) daily[date] = 0;
+    demandMap[name] =
+      (demandMap[name] || 0) + o.quantity;
+  });
 
-    if (o.type === "sale") {
-      sales += o.quantity;
-      daily[date] += o.quantity;
+  // 🟢 HIGH DEMAND
+  const highDemand = Object.entries(demandMap)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 5);
 
-       demandMap[o.productId] =
-        (demandMap[o.productId] || 0) + o.quantity;
+  // 🔴 DEAD STOCK
+  const deadStock = products.filter(
+    (p) => !(p.name in demandMap)
+  );
 
-      // 💸 Stockout loss 
-      if (o.stockout) {
-        stockoutLoss += o.quantity;
-      }
+  // 🟡 SLOW STOCK
+  const slowStock = products.filter((p) => {
+    const d = demandMap[p.name] || 0;
+    return d > 0 && d < 5;
+  });
 
-    } else {
-      purchases += o.quantity;
+  // 💰 METRICS
+  let totalOrders = orders.length;
+  let totalRevenue = 0;
+  let stockouts = 0;
+
+  orders.forEach((o: any) => {
+    if (o.stockout) stockouts++;
+
+    if (o.productId?.price) {
+      totalRevenue += o.quantity * o.productId.price;
     }
   });
 
-  const trend = Object.entries(daily).map(([date, value]) => ({
-    date,
-    demand: value,
-  }));
+  // 📈 TREND
+  const trendMap: Record<string, number> = {};
 
-   // 💰 Cash Flow
-  const cashFlow = sales - purchases;
+  orders.forEach((o: any) => {
+    const date = new Date(o.createdAt)
+      .toISOString()
+      .slice(0, 10);
 
-  // 📦 Product classification
-  const classification = products.map((p) => {
-    const demand = demandMap[p._id.toString()] || 0;
-
-    let status = "balanced";
-
-    if (demand > p.stock) status = "fast-moving";
-    else if (demand < p.stock / 2 && p.stock > 20)
-      status = "dead-stock";
-    else if (demand < p.stock) status = "slow-moving";
-
-    return {
-      name: p.name,
-      stock: p.stock,
-      demand,
-      status,
-    };
+    trendMap[date] =
+      (trendMap[date] || 0) + o.quantity;
   });
 
+  const trend = Object.entries(trendMap)
+    .map(([date, value]) => ({ date, value }))
+    .slice(-7);
 
   return NextResponse.json({
-    sales,
-    purchases,
+    lowStock,
+    highDemand,
+    deadStock,
+    slowStock,
+    metrics: {
+      totalOrders,
+      totalRevenue,
+      stockouts,
+    },
     trend,
-    profitEstimate: sales * 10, // dummy profit calculation
-    stockoutLoss,
-    classification,
-    cashFlow
   });
 }

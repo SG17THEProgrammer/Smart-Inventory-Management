@@ -3,6 +3,7 @@
 import Navbar from "@/components/Navbar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { signOut } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
@@ -63,7 +64,10 @@ export default function ShopPage() {
         <>
             <Navbar
                 pathname="/shop"
-                handleLogout={() => { }}
+                handleLogout={async () => {
+                          await signOut({ callbackUrl: "/login" });
+                          toast.success("Logged out successfully");
+                        }}
             ></Navbar>
             <div className="p-6 space-y-4">
                 <h1 className="text-xl font-bold">🛒 Shop</h1>
